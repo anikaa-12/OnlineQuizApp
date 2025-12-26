@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479612931146",
+    "project_id": "onlinequizapp-bb652",
+    "storage_bucket": "onlinequizapp-bb652.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479612931146:android:b2b8daab5bdb5bad066ab3",
+        "android_client_info": {
+          "package_name": "com.example.onlinequizapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbNC62NvcBVVCBQCsiO-Ac5_eAbD6Um-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
