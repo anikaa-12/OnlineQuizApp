@@ -1,81 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/yellow">
 
- android:background="color/yellow">
-   <TextView
+    <EditText
 
-   android:id="@+id/loginTitle"
-   android:layout_width="wrap_content"
-
-   android:layout_height="wrap_content"
-     android:text="Online Quiz Login"
-         android:textSize="24sp"
-         android:textStyle="bold"
-
-   app:layout_constraintTop_toTopOf="parent"
-
-   app:layout_constraintEnd_toEndOf="parent"
-
-   android:layout_marginTop="60dp"/>
-
-        <EditText
-
-        android:id="@=id/etUsername"
-
+        android:id="@+id/etUsername"
         android:layout_width="0dp"
-
         android:layout_height="wrap_content"
-           android:hint="Username"
-           android:padding="12dp"
-
+            android:hint="Username"
+            android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/loginTitle"
-
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
-
         android:layout_margin="24dp"/>
 
              <EditText
 
-             android:id="@=id/etPassword"
-
+             android:id="@+id/etPassword"
              android:layout_width="0dp"
-
              android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                   android:padding="12dp"
-
+                 android:hint="Password"
+                 android:inputType="textPassword"
+                 android:padding="12dp"
              app:layout_constraintTop_toBottomOf="@id/etUsername"
-
-             app:layout_constraintEnd_toEndOF="PARENT"
-
+                 app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
              android:layout_marginHorizontal="24dp"
-
              android:layout_marginTop="16dp"/>
 
-                   <Bottom
+                   <Button
 
                    android:id="@+id/btnLogin"
-
                    android:layout_width="0dp"
-
-
                    android:layout_height="wrap_content"
                       android:text="Login"
-
                    app:layout_constraintTop_toBottomOf="@id/etPassword"
-
                    app:layout_constraintStart_toStartOf="parent"
-
                    app:layout_constraintEnd_toEndOf="parent"
+                   android:layout_margin="24dp"/>
 
-                   android:layout_margin="24dp/>
+    <TextView
 
-                   </
-                   </androidx.constraintlayout.widget.ConstraintLayout>
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="108dp"
+        android:gravity="center"
+        android:text="Online Quiz Login"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
