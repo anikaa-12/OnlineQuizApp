@@ -15,7 +15,7 @@
         android:id="@+id/total_question"
         android:text="Total Questions"
         android:layout_centerHorizontal="true"
-        android:textSize="200dp"/>
+        android:textSize="42dp"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:id="@+id/question"
         android:textStyle="bold"
         android:text="This Will Be The Question"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="24dp"
         android:textAlignment="center"
         android:layout_margin="20dp"
