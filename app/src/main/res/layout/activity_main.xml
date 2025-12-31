@@ -20,11 +20,23 @@
         android:layout_alignParentTop="true"/>
 
     <TextView
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time : 10"
+        android:textSize="18sp"
+        android:textColor="@color/darker_blue"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dp"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/total_question"
         android:text="Total Questions"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnLogout"
         android:textSize="42dp"/>
 
     <TextView

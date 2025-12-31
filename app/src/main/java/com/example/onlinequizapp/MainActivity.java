@@ -1,7 +1,7 @@
 package com.example.onlinequizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.CountDownTimer;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView totalQuestionsTextView;
     TextView questionTextView;
+    TextView timerText;
     Button ansA, ansB, ansC, ansD;
     Button submitBtn;
 
@@ -20,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int totalQuestion = QuestionAnswer.question.length;
     int currentQuestionIndex = 0;
     String selectedAnswer = "";
+
+    int timer = 10;
+    CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button clickedButton = (Button) view;
 
         if (clickedButton.getId() == R.id.submit_btn) {
+            if (countDownTimer!=null){
+                countDownTimer.cancel();
+            }
 
             if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
                 score++;
@@ -76,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finishQuiz();
             return;
         }
+        if (countDownTimer!=null){
+            countDownTimer.cancel();
+        }
 
         questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
         ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
@@ -84,6 +94,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ansD.setText(QuestionAnswer.choices[currentQuestionIndex][3]);
 
         selectedAnswer = "";
+
+        startTimer();
+    }
+    void startTimer() {
+        timerText.setText("Time: " + timer);
+        countDownTimer = new CountDownTimer(timer * 1000, 1000){
+            @Override
+            public void onFinish() {
+                currentQuestionIndex++;
+                loadNewQuestion();
+            }
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timerText.setText("Time: " +millisUntilFinished/1000);
+            }
+        }.start();
     }
 
     void finishQuiz() {
