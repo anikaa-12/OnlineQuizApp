@@ -2,9 +2,13 @@
 <resources>
     <color name="yellow">#FFFFF2A0</color>
     <color name="light_green">#FFC8E6C9</color>
+    <color name="pale_olive">#E5E0B0</color>
+    <color name="light_pale_olive">#F3F1D9</color>
     <color name="darker_blue">#FF64B5F6</color>
+    <color name="muted_blue">#4A6FA5</color>
     <color name="light_purple">#FFCE93D8</color>
     <color name="pink">#FFF48FB1</color>
+    <color name="light_pink">#FFF5F5F8</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
