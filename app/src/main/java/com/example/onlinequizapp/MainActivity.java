@@ -1,19 +1,27 @@
 package com.example.onlinequizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.CountDownTimer;
+
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView totalQuestionsTextView;
     TextView questionTextView;
     TextView timerText;
+
     Button ansA, ansB, ansC, ansD;
     Button submitBtn;
 
@@ -25,13 +33,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int timer = 10;
     CountDownTimer countDownTimer;
 
+    FirebaseFirestore db;
+    FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+
         totalQuestionsTextView = findViewById(R.id.total_question);
         questionTextView = findViewById(R.id.question);
+        timerText = findViewById(R.id.timerText);
+
         ansA = findViewById(R.id.ans_A);
         ansB = findViewById(R.id.ans_B);
         ansC = findViewById(R.id.ans_C);
@@ -60,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button clickedButton = (Button) view;
 
         if (clickedButton.getId() == R.id.submit_btn) {
-            if (countDownTimer!=null){
+
+            if (countDownTimer != null) {
                 countDownTimer.cancel();
             }
 
@@ -76,14 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             clickedButton.setBackgroundColor(getResources().getColor(R.color.pink));
         }
     }
-
     void loadNewQuestion() {
 
         if (currentQuestionIndex == totalQuestion) {
             finishQuiz();
             return;
         }
-        if (countDownTimer!=null){
+
+        if (countDownTimer != null) {
             countDownTimer.cancel();
         }
 
@@ -94,21 +113,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ansD.setText(QuestionAnswer.choices[currentQuestionIndex][3]);
 
         selectedAnswer = "";
-
         startTimer();
     }
+
     void startTimer() {
-        timerText.setText("Time: " + timer);
-        countDownTimer = new CountDownTimer(timer * 1000, 1000){
+        timerText.setText("Time Left: " + timer + "s");
+
+        countDownTimer = new CountDownTimer(timer * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timerText.setText("Time Left: " + (millisUntilFinished / 1000) + "s");
+            }
+
             @Override
             public void onFinish() {
                 currentQuestionIndex++;
                 loadNewQuestion();
-            }
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timerText.setText("Time: " +millisUntilFinished/1000);
             }
         }.start();
     }
@@ -117,10 +137,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String passStatus = (score >= totalQuestion * 0.6) ? "Passed" : "Failed";
 
+        String userId = auth.getCurrentUser().getUid();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("score", score);
+        result.put("total", totalQuestion);
+        result.put("status", passStatus);
+
+        db.collection("quiz_results")
+                .document(userId)
+                .set(result);
+
         new AlertDialog.Builder(this)
                 .setTitle(passStatus)
                 .setMessage("Score: " + score + " out of " + totalQuestion)
-                .setPositiveButton("Restart", (dialogInterface, i) -> restartQuiz())
+                .setPositiveButton("Restart", (dialog, i) -> restartQuiz())
                 .setCancelable(false)
                 .show();
     }
