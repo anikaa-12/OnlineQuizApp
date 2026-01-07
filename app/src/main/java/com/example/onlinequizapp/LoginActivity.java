@@ -1,6 +1,6 @@
 package com.example.onlinequizapp;
 
-import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 public class LoginActivity extends AppCompatActivity {
-    EditText etUsername,etPassword;
+    EditText etUsername, etPassword;
     Button btnLogin;
     FirebaseAuth mAuth;
 
@@ -30,11 +30,34 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> loginUser());
     }
-    private void loginUser(){
-    String email = etUsername.getText().toString().trim();
-    String password= etPassword.getText().toString().trim();
-    if(email.isEmpty() || password.isEmpty()) 
+
+    private void loginUser() {
+        String email = etUsername.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill all fields",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mAuth.signlnWithEmailAndPassword(email, password).addOnCompleteListener(task ->
+        {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Login Successful",
+                        Toast.LENGTH_SHORT).show();
+
+                Intent intent =
+                        new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Login failed:" + task.getException().getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }
+
+
 
 
 

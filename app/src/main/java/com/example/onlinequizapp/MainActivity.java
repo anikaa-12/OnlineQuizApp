@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView totalQuestionsTextView;
     TextView questionTextView;
     TextView timerText;
+    TextView progressText;
 
     Button ansA, ansB, ansC, ansD;
     Button submitBtn;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         totalQuestionsTextView = findViewById(R.id.total_question);
         questionTextView = findViewById(R.id.question);
         timerText = findViewById(R.id.timerText);
+        progressText= findViewById(R.id.progress_text);
 
         ansA = findViewById(R.id.ans_A);
         ansB = findViewById(R.id.ans_B);
@@ -105,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+        progressText.setText("Question"+(currentQuestionIndex + 1) + "/" + totalQuestion);
+
 
         questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
         ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
