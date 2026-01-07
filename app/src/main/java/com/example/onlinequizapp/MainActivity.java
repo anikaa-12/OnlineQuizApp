@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Firebase
+
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
-        // Views
+
         totalQuestionsTextView = findViewById(R.id.total_question);
         questionTextView = findViewById(R.id.question);
-        timerText = findViewById(R.id.timer_text);
+        timerText = findViewById(R.id.timerText);
 
         ansA = findViewById(R.id.ans_A);
         ansB = findViewById(R.id.ans_B);
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         } else {
             selectedAnswer = clickedButton.getText().toString();
-            clickedButton.setBackgroundColor(getResources().getcolor(R.color.pink));
+            clickedButton.setBackgroundColor(getResources().getColor(R.color.pink));
         }
     }
     void loadNewQuestion() {
