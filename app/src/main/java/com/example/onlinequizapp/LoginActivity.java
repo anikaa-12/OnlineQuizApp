@@ -21,12 +21,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mAuth =
-                firebaseAuth.getlnstance();
-        etUsername = findViewByld(R.id.etUsername);
-        etPassword = findViewByld(R.id.etPassword);
+        mAuth =firebaseAuth.getInstance();
+
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
         btnLogin =
-                findViewByld(R.id.btnLogin);
+                findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(v -> loginUser());
     }
@@ -39,7 +39,8 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        mAuth.signlnWithEmailAndPassword(email, password).addOnCompleteListener(task ->
+        mAuth.signlnWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task->
         {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Login Successful",
