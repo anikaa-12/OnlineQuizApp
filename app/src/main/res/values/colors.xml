@@ -12,5 +12,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="correct_green">#44994A</color>
-    <color name="wrong_red">#EF9A9A</color>
+    <color name="wrong_red">#DC2B2B</color>
 </resources>
