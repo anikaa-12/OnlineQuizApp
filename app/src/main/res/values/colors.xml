@@ -11,4 +11,6 @@
     <color name="light_pink">#FFF5F5F8</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="correct_green">#44994A</color>
+    <color name="wrong_red">#EF9A9A</color>
 </resources>
