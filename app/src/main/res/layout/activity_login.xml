@@ -20,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginHorizontal="32dp"
-
         android:layout_marginTop="40dp"/>
 
     <EditText
@@ -62,15 +61,11 @@
         android:layout_marginTop="60dp"
         android:gravity="center"
         android:text="Welcome to QuizMaster"
-
-
         android:textColor="@color/white"
         android:textSize="29sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
