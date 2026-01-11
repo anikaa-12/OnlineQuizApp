@@ -42,15 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-
 
         totalQuestionsTextView = findViewById(R.id.total_question);
         questionTextView = findViewById(R.id.question);
         timerText = findViewById(R.id.timerText);
-        progressText= findViewById(R.id.progress_text);
+        progressText = findViewById(R.id.progress_text);
 
         ansA = findViewById(R.id.ans_A);
         ansB = findViewById(R.id.ans_B);
@@ -71,45 +69,81 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-
-        ansA.setBackgroundColor(Color.WHITE);
-        ansB.setBackgroundColor(Color.WHITE);
-        ansC.setBackgroundColor(Color.WHITE);
-        ansD.setBackgroundColor(Color.WHITE);
-
         Button clickedButton = (Button) view;
 
-        if (clickedButton.getId() == R.id.submit_btn) {
+        if (clickedButton.getId() != R.id.submit_btn) {
 
-            if (countDownTimer != null) {
-                countDownTimer.cancel();
-            }
-
-            if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
-                score++;
-            }
-
-            currentQuestionIndex++;
-            loadNewQuestion();
-
-        } else {
             selectedAnswer = clickedButton.getText().toString();
+
+
+            resetOptionColors();
+
             clickedButton.setBackgroundColor(getResources().getColor(R.color.pink));
+        } else {
+            handleSubmit();
         }
     }
+
+    private void handleSubmit() {
+        if (countDownTimer != null) countDownTimer.cancel();
+
+
+        ansA.setEnabled(false);
+        ansB.setEnabled(false);
+        ansC.setEnabled(false);
+        ansD.setEnabled(false);
+
+
+        Button correctButton = null;
+        if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansA.getText().toString()))
+            correctButton = ansA;
+        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansB.getText().toString()))
+            correctButton = ansB;
+        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansC.getText().toString()))
+            correctButton = ansC;
+        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansD.getText().toString()))
+            correctButton = ansD;
+
+        if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
+            score++;
+            if (correctButton != null)
+                correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
+        } else {
+            if (correctButton != null)
+                correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
+            if (!selectedAnswer.isEmpty())
+                clickedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
+        }
+
+        submitBtn.postDelayed(() -> {
+            currentQuestionIndex++;
+            loadNewQuestion();
+        }, 1000);
+    }
+
+    private void resetOptionColors() {
+        ansA.setBackgroundColor(getResources().getColor(R.color.white));
+        ansB.setBackgroundColor(getResources().getColor(R.color.white));
+        ansC.setBackgroundColor(getResources().getColor(R.color.white));
+        ansD.setBackgroundColor(getResources().getColor(R.color.white));
+
+        ansA.setEnabled(true);
+        ansB.setEnabled(true);
+        ansC.setEnabled(true);
+        ansD.setEnabled(true);
+    }
+
     void loadNewQuestion() {
+        resetOptionColors();
 
         if (currentQuestionIndex == totalQuestion) {
             finishQuiz();
             return;
         }
 
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        progressText.setText("Question"+(currentQuestionIndex + 1) + "/" + totalQuestion);
+        if (countDownTimer != null) countDownTimer.cancel();
 
-
+        progressText.setText("Question " + (currentQuestionIndex + 1) + " / " + totalQuestion);
         questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
         ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
         ansB.setText(QuestionAnswer.choices[currentQuestionIndex][1]);
@@ -131,16 +165,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFinish() {
-                currentQuestionIndex++;
-                loadNewQuestion();
+                handleSubmit();
             }
         }.start();
     }
 
     void finishQuiz() {
-
         String passStatus = (score >= totalQuestion * 0.6) ? "Passed" : "Failed";
-
         String userId = auth.getCurrentUser().getUid();
 
         Map<String, Object> result = new HashMap<>();
