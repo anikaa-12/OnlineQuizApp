@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button ansA, ansB, ansC, ansD;
     Button submitBtn;
+    Button selectedButton = null;
 
     int score = 0;
     int totalQuestion = QuestionAnswer.question.length;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (clickedButton.getId() != R.id.submit_btn) {
 
             selectedAnswer = clickedButton.getText().toString();
-
+            selectedButton = clickedButton;
 
             resetOptionColors();
 
@@ -111,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             if (correctButton != null)
                 correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
-            if (!selectedAnswer.isEmpty())
-                clickedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
+            if (selectedButton!=null)
+                selectedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
         }
 
         submitBtn.postDelayed(() -> {
