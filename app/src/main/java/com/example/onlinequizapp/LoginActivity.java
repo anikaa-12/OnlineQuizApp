@@ -41,25 +41,19 @@ public class LoginActivity extends AppCompatActivity {
         }
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task->
-        {
-            if (task.isSuccessful()) {
-                Toast.makeText(this, "Login Successful",
-                        Toast.LENGTH_SHORT).show();
+                {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Login Successful",
+                                Toast.LENGTH_SHORT).show();
 
-                Intent intent =
-                        new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Login failed:" + task.getException().getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+                        Intent intent =
+                                new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Login failed:" + task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 }
-
-
-
-
-
-

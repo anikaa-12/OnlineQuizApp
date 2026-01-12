@@ -6,7 +6,7 @@ plugins {
 android {
     namespace = "com.example.onlinequizapp"
     compileSdk {
-        version = release(34)
+        version = release(36)
     }
 
     defaultConfig {
