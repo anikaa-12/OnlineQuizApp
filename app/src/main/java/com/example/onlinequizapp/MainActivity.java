@@ -28,9 +28,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button selectedButton = null;
 
     int score = 0;
-    int totalQuestion = QuestionAnswer.question.length;
     int currentQuestionIndex = 0;
-    String selectedAnswer = "";
+    String subject;
+    String[] questions;
+    String[][] choices;
+    String[] correctAnswer;
+    int totalQuestion;
 
     int timer = 10;
     CountDownTimer countDownTimer;
@@ -45,6 +48,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+
+        subject = getIntent().getStringExtra("subject");
+        if(subject==null){
+            finish();
+            return;
+        }
+        questions = QuestionAnswer.getQuestions(subject);
+        choices = QuestionAnswer.getChoices(subject);
+        correctAnswer = QuestionAnswer.getCorrectAnswers(subject);
+
+        if(questions.length == 0){
+            finish();
+            return;
+        }
+        totalQuestion = questions.length;
 
         totalQuestionsTextView = findViewById(R.id.total_question);
         questionTextView = findViewById(R.id.question);

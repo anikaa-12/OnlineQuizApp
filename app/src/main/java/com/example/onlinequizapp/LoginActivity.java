@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
 
                         Intent intent =
-                                new Intent(LoginActivity.this, MainActivity.class);
+                                new Intent(LoginActivity.this, SubjectActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
