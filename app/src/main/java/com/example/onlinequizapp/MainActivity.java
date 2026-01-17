@@ -3,7 +3,7 @@ package com.example.onlinequizapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -27,15 +27,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button submitBtn;
     Button selectedButton = null;
 
+    String selectedAnswer = "";
+
     int score = 0;
     int currentQuestionIndex = 0;
+    int totalQuestion;
+    int timer = 10;
+
     String subject;
     String[] questions;
     String[][] choices;
     String[] correctAnswer;
-    int totalQuestion;
 
-    int timer = 10;
     CountDownTimer countDownTimer;
 
     FirebaseFirestore db;
@@ -50,18 +53,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         auth = FirebaseAuth.getInstance();
 
         subject = getIntent().getStringExtra("subject");
-        if(subject==null){
+        if (subject == null) {
             finish();
             return;
         }
+
         questions = QuestionAnswer.getQuestions(subject);
         choices = QuestionAnswer.getChoices(subject);
         correctAnswer = QuestionAnswer.getCorrectAnswers(subject);
 
-        if(questions.length == 0){
+        if (questions.length == 0) {
             finish();
             return;
         }
+
         totalQuestion = questions.length;
 
         totalQuestionsTextView = findViewById(R.id.total_question);
@@ -91,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button clickedButton = (Button) view;
 
         if (clickedButton.getId() != R.id.submit_btn) {
-
             selectedAnswer = clickedButton.getText().toString();
             selectedButton = clickedButton;
 
@@ -106,31 +110,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void handleSubmit() {
         if (countDownTimer != null) countDownTimer.cancel();
 
-
         ansA.setEnabled(false);
         ansB.setEnabled(false);
         ansC.setEnabled(false);
         ansD.setEnabled(false);
 
-
         Button correctButton = null;
-        if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansA.getText().toString()))
+        if (correctAnswer[currentQuestionIndex].equals(ansA.getText().toString()))
             correctButton = ansA;
-        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansB.getText().toString()))
+        else if (correctAnswer[currentQuestionIndex].equals(ansB.getText().toString()))
             correctButton = ansB;
-        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansC.getText().toString()))
+        else if (correctAnswer[currentQuestionIndex].equals(ansC.getText().toString()))
             correctButton = ansC;
-        else if (QuestionAnswer.correctAnswers[currentQuestionIndex].equals(ansD.getText().toString()))
+        else if (correctAnswer[currentQuestionIndex].equals(ansD.getText().toString()))
             correctButton = ansD;
 
-        if (selectedAnswer.equals(QuestionAnswer.correctAnswers[currentQuestionIndex])) {
+        if (selectedAnswer.equals(correctAnswer[currentQuestionIndex])) {
             score++;
             if (correctButton != null)
                 correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
         } else {
             if (correctButton != null)
                 correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
-            if (selectedButton!=null)
+            if (selectedButton != null)
                 selectedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
         }
 
@@ -152,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ansD.setEnabled(true);
     }
 
-    void loadNewQuestion() {
+    private void loadNewQuestion() {
         resetOptionColors();
 
         if (currentQuestionIndex == totalQuestion) {
@@ -163,17 +165,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (countDownTimer != null) countDownTimer.cancel();
 
         progressText.setText("Question " + (currentQuestionIndex + 1) + " / " + totalQuestion);
-        questionTextView.setText(QuestionAnswer.question[currentQuestionIndex]);
-        ansA.setText(QuestionAnswer.choices[currentQuestionIndex][0]);
-        ansB.setText(QuestionAnswer.choices[currentQuestionIndex][1]);
-        ansC.setText(QuestionAnswer.choices[currentQuestionIndex][2]);
-        ansD.setText(QuestionAnswer.choices[currentQuestionIndex][3]);
+        questionTextView.setText(questions[currentQuestionIndex]);
+        ansA.setText(choices[currentQuestionIndex][0]);
+        ansB.setText(choices[currentQuestionIndex][1]);
+        ansC.setText(choices[currentQuestionIndex][2]);
+        ansD.setText(choices[currentQuestionIndex][3]);
 
         selectedAnswer = "";
         startTimer();
     }
 
-    void startTimer() {
+    private void startTimer() {
         timerText.setText("Time Left: " + timer + "s");
 
         countDownTimer = new CountDownTimer(timer * 1000, 1000) {
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }.start();
     }
 
-    void finishQuiz() {
+    private void finishQuiz() {
         String passStatus = (score >= totalQuestion * 0.6) ? "Passed" : "Failed";
         String userId = auth.getCurrentUser().getUid();
 
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         result.put("status", passStatus);
 
         db.collection("quiz_results")
-                .document(userId)
+                .document(userId + "_" + subject)
                 .set(result);
 
         new AlertDialog.Builder(this)
@@ -210,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
-    void restartQuiz() {
+    private void restartQuiz() {
         score = 0;
         currentQuestionIndex = 0;
         loadNewQuestion();
