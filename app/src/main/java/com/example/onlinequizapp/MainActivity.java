@@ -18,16 +18,11 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView totalQuestionsTextView;
-    TextView questionTextView;
-    TextView timerText;
-    TextView progressText;
-
-    Button ansA, ansB, ansC, ansD;
-    Button submitBtn;
-    Button selectedButton = null;
+    TextView totalQuestionsTextView, questionTextView, timerText, progressText;
+    Button ansA, ansB, ansC, ansD, submitBtn, btnLogout;
 
     String selectedAnswer = "";
+    Button selectedButton = null;
 
     int score = 0;
     int currentQuestionIndex = 0;
@@ -40,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String[] correctAnswer;
 
     CountDownTimer countDownTimer;
-
     FirebaseFirestore db;
     FirebaseAuth auth;
 
@@ -79,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ansC = findViewById(R.id.ans_C);
         ansD = findViewById(R.id.ans_D);
         submitBtn = findViewById(R.id.submit_btn);
+        btnLogout = findViewById(R.id.btnLogout);
 
         ansA.setOnClickListener(this);
         ansB.setOnClickListener(this);
@@ -86,8 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ansD.setOnClickListener(this);
         submitBtn.setOnClickListener(this);
 
-        totalQuestionsTextView.setText("Total Questions : " + totalQuestion);
+        btnLogout.setOnClickListener(v -> {
+            auth.signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        });
 
+        totalQuestionsTextView.setText("Total Questions : " + totalQuestion);
         loadNewQuestion();
     }
 
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             selectedButton = clickedButton;
 
             resetOptionColors();
-
             clickedButton.setBackgroundColor(getResources().getColor(R.color.pink));
         } else {
             handleSubmit();
@@ -127,14 +126,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (selectedAnswer.equals(correctAnswer[currentQuestionIndex])) {
             score++;
-            if (correctButton != null)
-                correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
-        } else {
-            if (correctButton != null)
-                correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
-            if (selectedButton != null)
-                selectedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
+        } else if (selectedButton != null) {
+            selectedButton.setBackgroundColor(getResources().getColor(R.color.wrong_red));
         }
+
+        if (correctButton != null)
+            correctButton.setBackgroundColor(getResources().getColor(R.color.correct_green));
 
         submitBtn.postDelayed(() -> {
             currentQuestionIndex++;
@@ -176,12 +173,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startTimer() {
-        timerText.setText("Time Left: " + timer + "s");
-
         countDownTimer = new CountDownTimer(timer * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                timerText.setText("Time Left: " + (millisUntilFinished / 1000) + "s");
+                timerText.setText("Time Left: " + millisUntilFinished / 1000 + "s");
             }
 
             @Override
@@ -192,29 +187,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void finishQuiz() {
-        String passStatus = (score >= totalQuestion * 0.6) ? "Passed" : "Failed";
-        String userId = auth.getCurrentUser().getUid();
+        String status = (score >= totalQuestion * 0.6) ? "Passed" : "Failed";
 
         Map<String, Object> result = new HashMap<>();
+        result.put("subject", subject);
         result.put("score", score);
         result.put("total", totalQuestion);
-        result.put("status", passStatus);
+        result.put("status", status);
 
         db.collection("quiz_results")
-                .document(userId + "_" + subject)
+                .document(auth.getCurrentUser().getUid() + "_" + subject)
                 .set(result);
 
         new AlertDialog.Builder(this)
-                .setTitle(passStatus)
-                .setMessage("Score: " + score + " out of " + totalQuestion)
-                .setPositiveButton("Restart", (dialog, i) -> restartQuiz())
+                .setTitle(status)
+                .setMessage("Score: " + score + " / " + totalQuestion)
                 .setCancelable(false)
+                .setPositiveButton("Back to Subjects", (d, i) -> {
+                    Intent intent = new Intent(MainActivity.this, SubjectActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                })
                 .show();
-    }
-
-    private void restartQuiz() {
-        score = 0;
-        currentQuestionIndex = 0;
-        loadNewQuestion();
     }
 }
